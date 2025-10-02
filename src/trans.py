@@ -82,7 +82,7 @@ class process:
     def __init__(self, line, child):
         self.line = line
         self.child = child
-
+        self.vars=[]
     def __str__(self):
         return self.line['text'].replace(':', '') + '\n' + \
                ('\n' + ' ' * 4 * (self.line['level'] + 1)).join([str(i['processed']) for i in self.child]) + \
