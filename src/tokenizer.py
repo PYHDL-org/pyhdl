@@ -1,4 +1,6 @@
-from trans import trans,vhdl
+#!/usr/bin/env python3
+from trans import trans,vhdl,V
+from cli import code,outname
 def error(i):
     print(i)
 def splitting(text, spliter):
@@ -14,25 +16,26 @@ def getdefinition(line,index):
         if i==' ':level+=0.25
         elif i=='\t': level+=1
         else: break 
-    if level!=int(level):error(f'invalid definition level at line {index}')
-    return level
+    if level!=int(level):error(f'###############################################invalid definition level at line {index}')
+    return int(level)
 def split_blocks(text):
     i=-1
     lines=[]
     text=text.split('\n')
     print('lines num',len(text))
-    running = True 
+    running = True
     while running:
         line_type=None
         i+=1
         defined=False
         line_defin=getdefinition(text[i],i)
+        next_defin=getdefinition(text[i+1],i+1) if i+1<len(text) else -1
         def_keys={'if':'condition' , 'for':'for_loop', 'while':'while_loop','entity':'entity' ,'process':'process','func':'func'}#item with definition block
         keys={'=':'equation','import':'loading','return':'end','beark':'bearking'}
         if i!=0:
             if line_defin>=prev_defin+2:
                 error(f'invalid definition level at line {i}')
-        if ':' in text[i]:
+        if ((next_defin>-1) and (next_defin==line_defin+1)) or (text[i].strip().endswith(':')):
             defined = True
             if i==len(text)-1:
                 error(f'excpected definition block after line {i}')
@@ -45,6 +48,7 @@ def split_blocks(text):
         for key in keys:
             if key in text[i]:
                 line_type=keys[key]
+                if line_type=="loading":text[i]=text[i]+'.all'
                 break
         prev_defin=line_defin
         lines.append({'level':line_defin,'index':i,'text':text[i],'type':line_type, 'defined':defined})
@@ -82,27 +86,4 @@ def blockize(lines):
                 if index>=len(lines)-2:
                     break
     return lines
-
-lines=vhdl(trans(blockize(split_blocks('''import lib1
-for i in 7:
-    print('hello')
-if input():
-    while True:
-        answer=ask()
-        if not answer:
-            break
-    code_on()
-entity hi (link:bool,clock:int) -> red:bool :
-    link<=link and Glock
-    return link
-func hi (link:bool,clock:int) -> bool :
-    link<=link and Glock;
-    return link
-process(c,d,e,f):
-    c=d
-if greet:
-    say('hi')
-    '''))))
-'''for i in lines:
-    print(i)'''
-print(lines)
+open(outname,'w',encoding='utf-8').write(vhdl(trans(blockize(split_blocks(code)))))
