@@ -30,7 +30,7 @@ def split_blocks(text):
         defined=False
         line_defin=getdefinition(text[i],i)
         next_defin=getdefinition(text[i+1],i+1) if i+1<len(text) else -1
-        def_keys={'if':'condition' , 'for':'for_loop', 'while':'while_loop','entity':'entity' ,'process':'process','func':'func'}#item with definition block
+        def_keys={'var':'variable','sig':'signal',,'if':'condition' , 'for':'for_loop', 'while':'while_loop','entity':'entity' ,'process':'process','func':'func'}#item with definition block
         keys={'=':'equation','import':'loading','return':'end','beark':'bearking'}
         if i!=0:
             if line_defin>=prev_defin+2:
@@ -63,6 +63,7 @@ def blockize(lines):
     for i in range(len(lines)-1):
         print('blockizing,working with : ',lines[i]['text'])
         if lines[i]['defined']:
+            lines[i]['declerad']=[]
             if 'name' not in lines[i].keys():
                 lines[i]['name']=lines[i]['type']+str(def_keys_count[lines[i]['type']])
                 def_keys_count[lines[i]['type']]+=1
@@ -73,7 +74,8 @@ def blockize(lines):
                 print('text:',lines[i]['text'],'/index is:',index)
                 index+=1
                 print(f'i:{i},index:{index}')
-                
+                if lines[index]['type'] in ['variable','signal']:
+                    lines[i]['declerad'].append(lines[index])
                 if lines[index]['level']==lines[i]['level']+1:
                     if not lines[index]['defined']:lines[i]['childs'].append(index)
                     else:
