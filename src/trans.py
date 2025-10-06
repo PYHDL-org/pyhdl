@@ -84,7 +84,7 @@ class process:
         self.child = child
         self.vars=[]
     def __str__(self):
-        return self.line['text'].replace(':', '') + '\n' + \
+        return self.line['text'].replace(':', '') + '\n' + ' '*4*self.line['level']+'begin'  + '\n' + \
                ('\n' + ' ' * 4 * (self.line['level'] + 1)).join([str(i['processed']) for i in self.child]) + \
                '\n' + ' ' * 4 * int(self.line['level']) + 'end process;\n'
 
@@ -119,14 +119,18 @@ def trans(lines):
     return lines
 
 def vhdl(lines):
+    mod=''
     vhdlCode = ''
     for i in lines:
         if V: print("working with element:", i)
+        if i['type']=='loading':
+            mod+=i['processed']+'\n'
+            continue
         if i['level'] == 0:
             vhdlCode += str(i['processed']) + '\n'
         if i['type'] == 'entity':
             vhdlCode = i['processed'].pre() + vhdlCode
-    return vhdlCode
+    return mod+vhdlCode
 
 def trans_for_loop(line, level, child):
     text = line['text'].split()

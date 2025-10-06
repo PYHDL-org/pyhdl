@@ -30,8 +30,8 @@ def split_blocks(text):
         defined=False
         line_defin=getdefinition(text[i],i)
         next_defin=getdefinition(text[i+1],i+1) if i+1<len(text) else -1
-        def_keys={'var':'variable','sig':'signal',,'if':'condition' , 'for':'for_loop', 'while':'while_loop','entity':'entity' ,'process':'process','func':'func'}#item with definition block
-        keys={'=':'equation','import':'loading','return':'end','beark':'bearking'}
+        def_keys={'if':'condition' , 'for':'for_loop', 'while':'while_loop','entity':'entity' ,'process':'process','func':'func'}#item with definition block
+        keys={'var':'variable','sig':'signal','=':'equation','import':'loading','return':'end','beark':'bearking'}
         if i!=0:
             if line_defin>=prev_defin+2:
                 error(f'invalid definition level at line {i}')
