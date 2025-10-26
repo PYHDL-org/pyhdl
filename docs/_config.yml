@@ -1,0 +1,41 @@
+title: PYHDL
+description: Python to VHDL Converter - Translate Python-like syntax to VHDL hardware description language
+baseurl: ""
+url: "https://pyhdl.github.io"
+
+# Theme and styling
+theme: minima
+markdown: kramdown
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-redirect-from
+
+# Navigation
+navbar_pages:
+  - index.md
+  - getting-started.md
+  - usage.md
+  - api-reference.md
+
+# Footer and site info
+author: PYHDL Team
+twitter_username: pyhdl
+github_username: pyhdl
+
+# Build settings
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# Other settings
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+

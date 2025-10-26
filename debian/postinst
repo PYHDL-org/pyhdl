@@ -1,0 +1,13 @@
+#!/bin/bash
+# Post-installation script for pyhdl
+
+set -e
+
+# Set correct permissions
+chmod +x /usr/lib/python3/dist-packages/tokenizer.py 2>/dev/null || true
+
+echo "pyhdl installed successfully!"
+echo "Run 'pyhdl --help' to get started."
+
+exit 0
+

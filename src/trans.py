@@ -1,5 +1,3 @@
-from cli import V
-
 class entity:
     def __init__(self, line, name, ins, outs, architecture):
         self.name = name
@@ -88,71 +86,71 @@ class process:
                ('\n' + ' ' * 4 * (self.line['level'] + 1)).join([str(i['processed']) for i in self.child]) + \
                '\n' + ' ' * 4 * int(self.line['level']) + 'end process;\n'
 
-def trans(lines):
+def trans(lines, verbose=False):
     replaces = [
         {'key': 'equation', 'old': '=', 'new': '<='},
         {'key': 'loading', 'old': 'import ', 'new': 'use work.'}
     ]
     for i in range(len(lines)):
         if not lines[i]['defined']:
-            if V: print('processing')
+            if verbose: print('processing')
             lineType = lines[i]['type']
             for j in replaces:
                 if lineType == j['key']:
-                    if V: print('replacing')
+                    if verbose: print('replacing')
                     lines[i]['processed'] = lines[i]['text'].replace(j['old'], j['new']) + ';'
             if 'processed' not in lines[i].keys():
                 lines[i]['processed'] = lines[i]['text'] + ';'
         else:
             if lines[i]['type'] == 'condition':
-                lines[i]['processed'] = trans_condition(lines[i], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_condition(lines[i], [lines[j] for j in lines[i]['childs']], verbose)
             elif lines[i]['type'] == 'func':
-                lines[i]['processed'] = trans_fanc(lines[i], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_fanc(lines[i], [lines[j] for j in lines[i]['childs']], verbose)
             elif lines[i]['type'] == 'for_loop':
-                lines[i]['processed'] = trans_for_loop(lines[i], lines[i]['level'], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_for_loop(lines[i], lines[i]['level'], [lines[j] for j in lines[i]['childs']], verbose)
             elif lines[i]['type'] == 'while_loop':
-                lines[i]['processed'] = trans_while_loop(lines[i], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_while_loop(lines[i], [lines[j] for j in lines[i]['childs']], verbose)
             elif lines[i]['type'] == 'entity':
-                lines[i]['processed'] = trans_entity(lines[i], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_entity(lines[i], [lines[j] for j in lines[i]['childs']], verbose)
             elif lines[i]['type'] == 'process':
-                lines[i]['processed'] = trans_process(lines[i], [lines[j] for j in lines[i]['childs']])
+                lines[i]['processed'] = trans_process(lines[i], [lines[j] for j in lines[i]['childs']], verbose)
     return lines
 
-def vhdl(lines):
+def vhdl(lines, verbose=False):
     vhdlCode = ''
     for i in lines:
-        if V: print("working with element:", i)
+        if verbose: print("working with element:", i)
         if i['level'] == 0:
             vhdlCode += str(i['processed']) + '\n'
         if i['type'] == 'entity':
             vhdlCode = i['processed'].pre() + vhdlCode
     return vhdlCode
 
-def trans_for_loop(line, level, child):
+def trans_for_loop(line, level, child, verbose=False):
     text = line['text'].split()
     loop_var = text[text.index('for') + 1]
     iterable = text[text.index('in') + 1]
-    if V: print(f'for line {line["text"]}: iterable={iterable}, loop_var={loop_var}')
+    if verbose: print(f'for line {line["text"]}: iterable={iterable}, loop_var={loop_var}')
     return for_loop(line['name'], level, loop_var, iterable, child)
 
-def trans_condition(line, child):
+def trans_condition(line, child, verbose=False):
     return cond(line, child)
 
-def trans_process(line, child):
+def trans_process(line, child, verbose=False):
     return process(line, child)
 
-def trans_fanc(line, child):
+def trans_fanc(line, child, verbose=False):
     Name = line['name']
     text = line['text']
     ins = text[text.index('(') + 1:text.index(')')]
     returned_type = text.split()[-2]
-    print('\n' * 2, 'Names:', Name, ',ins: ', ins, ', return :', returned_type, '\n' * 2)
+    if verbose: print('\n' * 2, 'Names:', Name, ',ins: ', ins, ', return :', returned_type, '\n' * 2)
     return func(Name, returned_type, child, ins)
 
-def trans_while_loop(line, child):
+def trans_while_loop(line, child, verbose=False):
     return while_loop(line, child)
 
-def trans_entity(line, child):
+def trans_entity(line, child, verbose=False):
     text = line['text']
     name = text.split()[1]
     # Expect ins/outs as list of tuples: (name, type)

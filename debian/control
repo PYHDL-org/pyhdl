@@ -1,0 +1,13 @@
+Package: pyhdl
+Version: 0.1.0-1
+Section: devel
+Priority: optional
+Architecture: amd64
+Depends: python3 (>= 3.7)
+Maintainer: PYHDL Team <pyhdl@example.com>
+Description: Python to VHDL converter
+ PYHDL is a tool that converts Python-like syntax to VHDL code.
+ This tool helps developers work with hardware description using
+ a Python-inspired syntax.
+Homepage: https://github.com/pyhdl/pyhdl
+
