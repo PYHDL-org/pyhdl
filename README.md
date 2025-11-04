@@ -70,7 +70,7 @@ python3 setup.py install
 
 ## License
 
-MIT License
+Apache 2.0 License
 
 ## Author
 
