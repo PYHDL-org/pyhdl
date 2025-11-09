@@ -21,8 +21,7 @@ navbar_pages:
 
 # Footer and site info
 author: PYHDL Team
-twitter_username: pyhdl
-github_username: pyhdl
+github_username: PYHDL-org
 
 # Build settings
 exclude:
