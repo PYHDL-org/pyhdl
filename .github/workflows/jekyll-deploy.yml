@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # ✅ updated from v3 to v4
       
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -29,18 +29,17 @@ jobs:
       
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5  # ✅ updated from v2 to v5
       
       - name: Build with Jekyll
         working-directory: ./docs
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3  # ✅ updated from v1 to v3
         with:
           path: ./docs/_site
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
-
+        uses: actions/deploy-pages@v4  # ✅ updated from v1 to v4
